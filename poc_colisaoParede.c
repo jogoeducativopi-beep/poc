@@ -51,12 +51,23 @@ int main(){
     }
     //Fila onde o allegro coloca o que aconteceu
     ALLEGRO_EVENT_QUEUE*event_queue = al_create_event_queue();
+
+    // um relogio que libera um aviso 60 vezes por segundo
+    ALLEGRO_TIMER*timer /*Variavel ponteiro que guarda o relogio na mermoria*/ = al_create_timer(1.0/60.0) /*cria o cronometro e o intervalo*/;
+    
     //O display vai enviar eventos para a fila
     al_register_event_source(/*Conecta o gerador de eventos a uma fila de eventos*/
         event_queue, /*estrutura que guarda a ordem*/
         al_get_display_event_source(display) /*pega o canal de avisos da janela display*/
     // quando acontecer um evento nessa janela, coloque o evento na event_queue
     );
+    
+    //Teclado a fila de eventos
+    al_register_event_source(
+        event_queue, // guarda o evento
+        al_get_keyboard_event_source() //liga o teclado
+    );
+
     //Enquanto for verdadeiro , o programa continua
     bool /*dado boleano guarda verdadeiro ou falso*/ running /*chave geral do loop*/ = true;
 
@@ -70,6 +81,15 @@ int main(){
             running = false;
             // se o evento do display fechar o running da falso e interrope o evento
         }
+
+        // criar movimento do jogador 
+        if (event.type /*que tipo de acontecimento acabou de ocorrer*/ == ALLEGRO_EVENT_KEY_DOWN) //verifica qual tecla foi apertada
+        {
+            if (event.keyboard.keycode /*campo que guarda o codigo exato da tecla que foi apertada*/ == ALLEGRO_KEY_RIGHT /*representa a tecla da direita*/){ //verifica se a tecla apertada foi a ->
+                jogador.x += 5; //adicionar 5 no x, anda mais a direita
+            }
+        }
+        
         //Aparecer desenho na tela, desenha retangulo
         al_draw_filled_rectangle(
             jogador.x,
