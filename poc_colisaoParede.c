@@ -18,6 +18,8 @@ typedef struct /*Permite juntar varias informações dentro de uma unica coisa*/
 
 int main()
 {
+    //Vetor que guarda o estados das teclas
+    bool teclas /*lista de interruptores*/[ALLEGRO_KEY_MAX] = {false}; /*numero total de teclas*/
     // Inicializar o Allegro
     if (/*"Liga o Allegro"*/ !al_init())
     {
@@ -103,21 +105,43 @@ int main()
         // criar movimento do jogador
         if (event.type /*que tipo de acontecimento acabou de ocorrer*/ == ALLEGRO_EVENT_KEY_DOWN) // verifica qual tecla foi apertada
         {
-            if (event.keyboard.keycode /*campo que guarda o codigo exato da tecla que foi apertada*/ == ALLEGRO_KEY_RIGHT /*representa a tecla da direita*/)
-            {                   // verifica se a tecla apertada foi a ->
-                jogador.x += 5; // adicionar 5 no x, anda mais a direita
+            teclas[event.keyboard.keycode] = true; // é verdadeiro que a tecla esta pressionada
+
+            // if (event.keyboard.keycode /*campo que guarda o codigo exato da tecla que foi apertada*/ == ALLEGRO_KEY_RIGHT /*representa a tecla da direita*/)
+            // {                   // verifica se a tecla apertada foi a ->
+            //     jogador.x += 5; // adicionar 5 no x, anda mais a direita
+            // }
+            // if (event.keyboard.keycode /*campo que guarda o codigo exato da tecla que foi apertada*/ == ALLEGRO_KEY_LEFT /*representa a tecla da esquerda*/)
+            // {                   // verifica se a tecla apertada foi a <-
+            //     jogador.x -= 5; // adicionar 5 no y, anda mais a esquerda
+            // }
+            // if (event.keyboard.keycode /*campo que guarda o codigo exato da tecla que foi apertada*/ == ALLEGRO_KEY_DOWN /*representa a tecla da esquerda*/)
+            // {                   // verifica se a tecla apertada foi a <-
+            //     jogador.y += 5; // adicionar 5 no y, anda mais a esquerda
+            // }
+            // if (event.keyboard.keycode /*campo que guarda o codigo exato da tecla que foi apertada*/ == ALLEGRO_KEY_UP /*representa a tecla da esquerda*/)
+            // {                   // verifica se a tecla apertada foi a <-
+            //     jogador.y -= 5; // adicionar 5 no y, anda mais a esquerda
+            // }
+        }
+        //mover pelo timer
+        if(event.type == ALLEGRO_EVENT_TIMER) //aviso o evento
+        {
+            if(teclas[ALLEGRO_KEY_RIGHT]){
+                jogador.x += 5; // direita
             }
-            if (event.keyboard.keycode /*campo que guarda o codigo exato da tecla que foi apertada*/ == ALLEGRO_KEY_LEFT /*representa a tecla da esquerda*/)
-            {                   // verifica se a tecla apertada foi a <-
-                jogador.x -= 5; // adicionar 5 no y, anda mais a esquerda
+            if (teclas[ALLEGRO_KEY_DPAD_LEFT])
+            {
+                jogador.x -= 5; // esquerda
             }
-            if (event.keyboard.keycode /*campo que guarda o codigo exato da tecla que foi apertada*/ == ALLEGRO_KEY_DOWN /*representa a tecla da esquerda*/)
-            {                   // verifica se a tecla apertada foi a <-
-                jogador.y += 5; // adicionar 5 no y, anda mais a esquerda
+            if (teclas[ALLEGRO_KEY_UP])
+            {
+                 jogador.y -= 5; //baixo
             }
-            if (event.keyboard.keycode /*campo que guarda o codigo exato da tecla que foi apertada*/ == ALLEGRO_KEY_UP /*representa a tecla da esquerda*/)
-            {                   // verifica se a tecla apertada foi a <-
-                jogador.y -= 5; // adicionar 5 no y, anda mais a esquerda
+
+            if (teclas[ALLEGRO_KEY_DOWN])
+            {
+                 jogador.y += 5; //cima
             }
         }
 
