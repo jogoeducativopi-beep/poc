@@ -124,6 +124,9 @@ int main()
             //     jogador.y -= 5; // adicionar 5 no y, anda mais a esquerda
             // }
         }
+        if(event.type == ALLEGRO_EVENT_KEY_UP) /*Verifica o evento de soltar a tecla*/ {
+            teclas[event.keyboard.keycode] = false; //muda para false fazendo assim o movimento parar
+        }
         //mover pelo timer
         if(event.type == ALLEGRO_EVENT_TIMER) //aviso o evento
         {
