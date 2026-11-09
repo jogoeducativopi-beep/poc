@@ -16,11 +16,14 @@ typedef struct /*Permite juntar varias informações dentro de uma unica coisa*/
     ALLEGRO_COLOR color; // cor
 } Retangulo;             // nome do molde;
 
-bool colisao(Retangulo jogador, Retangulo obstaculo ){ //borda esquerda do jogador encostou na borda esquerda do obstaculo
+bool colisao(Retangulo jogador, Retangulo obstaculo, Retangulo obstaculo2 ){ //borda esquerda do jogador encostou na borda esquerda do obstaculo
     return jogador.x + jogador.width >= obstaculo.x &&
     jogador.x <= obstaculo.x + obstaculo.width &&
     jogador.y + jogador.height >= obstaculo.y &&
-    jogador.y <= obstaculo.y + obstaculo.height;
+    jogador.y <= obstaculo.y + obstaculo.height || jogador.x + jogador.width >= obstaculo2.x &&
+    jogador.x <= obstaculo2.x + obstaculo2.width &&
+    jogador.y + jogador.height >= obstaculo2.y &&
+    jogador.y <= obstaculo2.y + obstaculo2.height;
 }
 
 
@@ -63,6 +66,13 @@ int main()
         100,
         50,
         al_map_rgb(0,255,0)
+    };
+        Retangulo obstaculo2 = {
+        200,
+        200,
+        100,
+        50,
+        al_map_rgb(0,0,255)
     };
         if (!display /*Verifica se a janela falhou*/)
     {
@@ -115,23 +125,6 @@ int main()
         if (event.type /*que tipo de acontecimento acabou de ocorrer*/ == ALLEGRO_EVENT_KEY_DOWN) // verifica qual tecla foi apertada
         {
             teclas[event.keyboard.keycode] = true; // é verdadeiro que a tecla esta pressionada
-
-            // if (event.keyboard.keycode /*campo que guarda o codigo exato da tecla que foi apertada*/ == ALLEGRO_KEY_RIGHT /*representa a tecla da direita*/)
-            // {                   // verifica se a tecla apertada foi a ->
-            //     jogador.x += 5; // adicionar 5 no x, anda mais a direita
-            // }
-            // if (event.keyboard.keycode /*campo que guarda o codigo exato da tecla que foi apertada*/ == ALLEGRO_KEY_LEFT /*representa a tecla da esquerda*/)
-            // {                   // verifica se a tecla apertada foi a <-
-            //     jogador.x -= 5; // adicionar 5 no y, anda mais a esquerda
-            // }
-            // if (event.keyboard.keycode /*campo que guarda o codigo exato da tecla que foi apertada*/ == ALLEGRO_KEY_DOWN /*representa a tecla da esquerda*/)
-            // {                   // verifica se a tecla apertada foi a <-
-            //     jogador.y += 5; // adicionar 5 no y, anda mais a esquerda
-            // }
-            // if (event.keyboard.keycode /*campo que guarda o codigo exato da tecla que foi apertada*/ == ALLEGRO_KEY_UP /*representa a tecla da esquerda*/)
-            // {                   // verifica se a tecla apertada foi a <-
-            //     jogador.y -= 5; // adicionar 5 no y, anda mais a esquerda
-            // }
         }
         if(event.type == ALLEGRO_EVENT_KEY_UP) /*Verifica o evento de soltar a tecla*/ {
             teclas[event.keyboard.keycode] = false; //muda para false fazendo assim o movimento parar
@@ -142,7 +135,7 @@ int main()
             if(teclas[ALLEGRO_KEY_RIGHT]){
                 jogador.x += 5; // direita
 
-                if (colisao(jogador,obstaculo)) //verifica se bateu
+                if (colisao(jogador,obstaculo, obstaculo2)) //verifica se bateu
                 {
                     jogador.x-=5; // 5-5=0
                 }
@@ -152,7 +145,7 @@ int main()
             {
                 jogador.x -= 5; // esquerda
 
-                 if (colisao(jogador,obstaculo)) //verifica se bateu
+                 if (colisao(jogador,obstaculo,obstaculo2)) //verifica se bateu
                 {
                     jogador.x+=5; // -5+5=0
                 }
@@ -160,7 +153,7 @@ int main()
             if (teclas[ALLEGRO_KEY_UP])
             {
                  jogador.y -= 5; //baixo
-                if (colisao(jogador,obstaculo)) //verifica se bateu
+                if (colisao(jogador,obstaculo,obstaculo2)) //verifica se bateu
                 {
                     jogador.y+=5; // 5-5=0
                 }
@@ -169,7 +162,7 @@ int main()
             if (teclas[ALLEGRO_KEY_DOWN])
             {
                  jogador.y += 5; //cima
-                if (colisao(jogador,obstaculo)) //verifica se bateu
+                if (colisao(jogador,obstaculo,obstaculo2)) //verifica se bateu
                 {
                     jogador.y-=5; // 5-5=0
                 }
@@ -194,9 +187,13 @@ int main()
             obstaculo.y + obstaculo.height,
             obstaculo.color
         );
-            if (colisao(jogador, obstaculo) == true){
-        printf("houve colisao");
-    } else{printf("nao houve");}
+        al_draw_filled_rectangle(
+            obstaculo2.x,
+            obstaculo2.y,
+            obstaculo2.x +obstaculo2.width,
+            obstaculo2.y + obstaculo2.height,
+            obstaculo2.color
+        );
         al_flip_display(); // faz o desenho aparecer na tela
     }
 
