@@ -45,8 +45,15 @@ int main()
         50,
         50,
         al_map_rgb(255, 0, 0)};
-
-    if (!display /*Verifica se a janela falhou*/)
+    
+    Retangulo obstaculo = {
+        300,
+        400,
+        100,
+        50,
+        al_map_rgb(0,255,0)
+    };
+        if (!display /*Verifica se a janela falhou*/)
     {
         printf("Erro ao exibir display");
         return -1;
@@ -124,6 +131,14 @@ int main()
             jogador.x + jogador.width,
             jogador.y + jogador.height,
             jogador.color);
+
+        al_draw_filled_rectangle(
+            obstaculo.x,
+            obstaculo.y,
+            obstaculo.x + obstaculo.width,
+            obstaculo.y + obstaculo.height,
+            obstaculo.color
+        );
         al_flip_display(); // faz o desenho aparecer na tela
     }
 
