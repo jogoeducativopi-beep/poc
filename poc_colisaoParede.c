@@ -16,21 +16,18 @@ typedef struct /*Permite juntar varias informações dentro de uma unica coisa*/
     ALLEGRO_COLOR color; // cor
 } Retangulo;             // nome do molde;
 
-bool colisao(Retangulo jogador, Retangulo obstaculo, Retangulo obstaculo2 ){ //borda esquerda do jogador encostou na borda esquerda do obstaculo
+bool colisao(Retangulo jogador, Retangulo obstaculo)
+{ //se o jogador encosta nas bordas
     return jogador.x + jogador.width >= obstaculo.x &&
-    jogador.x <= obstaculo.x + obstaculo.width &&
-    jogador.y + jogador.height >= obstaculo.y &&
-    jogador.y <= obstaculo.y + obstaculo.height || jogador.x + jogador.width >= obstaculo2.x &&
-    jogador.x <= obstaculo2.x + obstaculo2.width &&
-    jogador.y + jogador.height >= obstaculo2.y &&
-    jogador.y <= obstaculo2.y + obstaculo2.height;
+           jogador.x <= obstaculo.x + obstaculo.width &&
+           jogador.y + jogador.height >= obstaculo.y &&
+           jogador.y <= obstaculo.y + obstaculo.height;
 }
-
 
 int main()
 {
 
-    //Vetor que guarda o estados das teclas
+    // Vetor que guarda o estados das teclas
     bool teclas /*lista de interruptores*/[ALLEGRO_KEY_MAX] = {false}; /*numero total de teclas*/
     // Inicializar o Allegro
     if (/*"Liga o Allegro"*/ !al_init())
@@ -59,22 +56,21 @@ int main()
         50,
         50,
         al_map_rgb(255, 0, 0)};
-    
-    Retangulo obstaculo = {
-        300,
-        400,
-        100,
-        50,
-        al_map_rgb(0,255,0)
-    };
-        Retangulo obstaculo2 = {
-        200,
-        200,
-        100,
-        50,
-        al_map_rgb(0,0,255)
-    };
-        if (!display /*Verifica se a janela falhou*/)
+
+    // Criação de um vetor para obstaculos
+    Retangulo obstaculo[2] = {
+        {300,
+         400,
+         100,
+         50,
+         al_map_rgb(0, 255, 0)},
+        {500,
+         350,
+         100,
+         50,
+         al_map_rgb(0, 0, 255)}};
+
+    if (!display /*Verifica se a janela falhou*/)
     {
         printf("Erro ao exibir display");
         return -1;
@@ -83,13 +79,13 @@ int main()
     ALLEGRO_EVENT_QUEUE *event_queue = al_create_event_queue();
 
     // um relogio que libera um aviso 60 vezes por segundo
-    ALLEGRO_TIMER * timer /*Variavel ponteiro que guarda o relogio na mermoria*/ = al_create_timer(1.0 / 60.0) /*cria o cronometro e o intervalo*/;
+    ALLEGRO_TIMER *timer /*Variavel ponteiro que guarda o relogio na mermoria*/ = al_create_timer(1.0 / 60.0) /*cria o cronometro e o intervalo*/;
 
     // O display vai enviar eventos para a fila
     al_register_event_source(                                     /*Conecta o gerador de eventos a uma fila de eventos*/
                              event_queue,                         /*estrutura que guarda a ordem*/
                              al_get_display_event_source(display) /*pega o canal de avisos da janela display*/
-                             // quando acontecer um evento nessa janela, coloque o evento na event_queue
+                                                                  // quando acontecer um evento nessa janela, coloque o evento na event_queue
     );
 
     // Teclado a fila de eventos
@@ -97,10 +93,10 @@ int main()
         event_queue,                   // guarda o evento
         al_get_keyboard_event_source() // liga o teclado
     );
-    //fila de evento do timer
+    // fila de evento do timer
     al_register_event_source(
-        event_queue,  //guarda o evento
-        al_get_timer_event_source(timer) //liga e avis o evento
+        event_queue,                     // guarda o evento
+        al_get_timer_event_source(timer) // liga e avis o evento
     );
 
     // Inicia o timer
@@ -126,51 +122,64 @@ int main()
         {
             teclas[event.keyboard.keycode] = true; // é verdadeiro que a tecla esta pressionada
         }
-        if(event.type == ALLEGRO_EVENT_KEY_UP) /*Verifica o evento de soltar a tecla*/ {
-            teclas[event.keyboard.keycode] = false; //muda para false fazendo assim o movimento parar
-        }
-        //mover pelo timer
-        if(event.type == ALLEGRO_EVENT_TIMER) //aviso o evento
+        if (event.type == ALLEGRO_EVENT_KEY_UP) /*Verifica o evento de soltar a tecla*/
         {
-            if(teclas[ALLEGRO_KEY_RIGHT]){
+            teclas[event.keyboard.keycode] = false; // muda para false fazendo assim o movimento parar
+        }
+        // mover pelo timer
+        if (event.type == ALLEGRO_EVENT_TIMER) // aviso o evento
+        {
+            if (teclas[ALLEGRO_KEY_RIGHT])
+            {
                 jogador.x += 5; // direita
 
-                if (colisao(jogador,obstaculo, obstaculo2)) //verifica se bateu
+                for (int i = 0; i < 2; i++)
                 {
-                    jogador.x-=5; // 5-5=0
+                    if (colisao(jogador, obstaculo[i]))
+                    {
+                        jogador.x -= 5; // 5-5=0
+                    }
                 }
-                
             }
             if (teclas[ALLEGRO_KEY_LEFT])
             {
                 jogador.x -= 5; // esquerda
 
-                 if (colisao(jogador,obstaculo,obstaculo2)) //verifica se bateu
+                for (int i = 0; i < 2; i++)
                 {
-                    jogador.x+=5; // -5+5=0
+                    if (colisao(jogador, obstaculo[i]))
+                    {
+                        jogador.x +=5; // -5+5=0
+                    }
                 }
             }
             if (teclas[ALLEGRO_KEY_UP])
             {
-                 jogador.y -= 5; //baixo
-                if (colisao(jogador,obstaculo,obstaculo2)) //verifica se bateu
+                jogador.y -= 5;                              // baixo
+                for (int i = 0; i < 2; i++)
                 {
-                    jogador.y+=5; // 5-5=0
+                    if (colisao(jogador, obstaculo[i]))
+                    {
+                        jogador.y += 5; // -5+5=0
+                    }
                 }
             }
 
             if (teclas[ALLEGRO_KEY_DOWN])
             {
-                 jogador.y += 5; //cima
-                if (colisao(jogador,obstaculo,obstaculo2)) //verifica se bateu
+                jogador.y += 5;                              // cima
+                for (int i = 0; i < 2; i++)
                 {
-                    jogador.y-=5; // 5-5=0
+                    if (colisao(jogador, obstaculo[i]))
+                    {
+                        jogador.y -= 5; // 5-5=0
+                    }
                 }
             }
         }
 
-        //limpa tela
-        al_clear_to_color(al_map_rgb(0,0,0)); //tirar o rastro limpando a cada quadro
+        // limpa tela
+        al_clear_to_color(al_map_rgb(0, 0, 0)); // tirar o rastro limpando a cada quadro
 
         // Aparecer desenho na tela, desenha retangulo
         al_draw_filled_rectangle(
@@ -179,24 +188,19 @@ int main()
             jogador.x + jogador.width,
             jogador.y + jogador.height,
             jogador.color);
-
-        al_draw_filled_rectangle(
-            obstaculo.x,
-            obstaculo.y,
-            obstaculo.x + obstaculo.width,
-            obstaculo.y + obstaculo.height,
-            obstaculo.color
-        );
-        al_draw_filled_rectangle(
-            obstaculo2.x,
-            obstaculo2.y,
-            obstaculo2.x +obstaculo2.width,
-            obstaculo2.y + obstaculo2.height,
-            obstaculo2.color
-        );
+//laço de repetição
+        for(int i = 0; i<2; i++)
+        {
+            al_draw_filled_rectangle(
+                obstaculo[i].x,
+                obstaculo[i].y,
+                obstaculo[i].x + obstaculo[i].width,
+                obstaculo[i].y + obstaculo[i].height,
+                obstaculo[i].color
+            );
+        }
         al_flip_display(); // faz o desenho aparecer na tela
     }
-
 
     // apaga a fila e fecha a janela
     al_destroy_event_queue(event_queue); // apagar a fila de evntos na memoria ram quando o jogo termina
