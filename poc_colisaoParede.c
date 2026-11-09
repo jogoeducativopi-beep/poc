@@ -16,8 +16,17 @@ typedef struct /*Permite juntar varias informações dentro de uma unica coisa*/
     ALLEGRO_COLOR color; // cor
 } Retangulo;             // nome do molde;
 
+bool colisao(Retangulo jogador, Retangulo obstaculo ){ //borda esquerda do jogador encostou na borda esquerda do obstaculo
+    return jogador.x + jogador.width >= obstaculo.x &&
+    jogador.x <= obstaculo.x + obstaculo.width &&
+    jogador.y + jogador.height >= obstaculo.y &&
+    jogador.y <= obstaculo.y + obstaculo.height;
+}
+
+
 int main()
 {
+
     //Vetor que guarda o estados das teclas
     bool teclas /*lista de interruptores*/[ALLEGRO_KEY_MAX] = {false}; /*numero total de teclas*/
     // Inicializar o Allegro
@@ -133,7 +142,7 @@ int main()
             if(teclas[ALLEGRO_KEY_RIGHT]){
                 jogador.x += 5; // direita
             }
-            if (teclas[ALLEGRO_KEY_DPAD_LEFT])
+            if (teclas[ALLEGRO_KEY_LEFT])
             {
                 jogador.x -= 5; // esquerda
             }
@@ -166,8 +175,12 @@ int main()
             obstaculo.y + obstaculo.height,
             obstaculo.color
         );
+            if (colisao(jogador, obstaculo) == true){
+        printf("houve colisao");
+    } else{printf("nao houve");}
         al_flip_display(); // faz o desenho aparecer na tela
     }
+
 
     // apaga a fila e fecha a janela
     al_destroy_event_queue(event_queue); // apagar a fila de evntos na memoria ram quando o jogo termina
