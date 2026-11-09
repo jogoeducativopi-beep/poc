@@ -141,19 +141,38 @@ int main()
         {
             if(teclas[ALLEGRO_KEY_RIGHT]){
                 jogador.x += 5; // direita
+
+                if (colisao(jogador,obstaculo)) //verifica se bateu
+                {
+                    jogador.x-=5; // 5-5=0
+                }
+                
             }
             if (teclas[ALLEGRO_KEY_LEFT])
             {
                 jogador.x -= 5; // esquerda
+
+                 if (colisao(jogador,obstaculo)) //verifica se bateu
+                {
+                    jogador.x+=5; // -5+5=0
+                }
             }
             if (teclas[ALLEGRO_KEY_UP])
             {
                  jogador.y -= 5; //baixo
+                if (colisao(jogador,obstaculo)) //verifica se bateu
+                {
+                    jogador.y+=5; // 5-5=0
+                }
             }
 
             if (teclas[ALLEGRO_KEY_DOWN])
             {
                  jogador.y += 5; //cima
+                if (colisao(jogador,obstaculo)) //verifica se bateu
+                {
+                    jogador.y-=5; // 5-5=0
+                }
             }
         }
 
