@@ -5,6 +5,18 @@
 #include <allegro5/allegro_font.h>
 #include <allegro5/allegro_ttf.h>
 
+//estrutura do retangulo 
+typedef struct /*Permite juntar varias informações dentro de uma unica coisa*/
+{
+    //molde do retangulo, quando criar um retangulo, ele vai guardar posição, tamanho e cor
+    float x; //posição horizontal
+    float y; //posição vertical
+    float width; //largura
+    float height; //altura
+    ALLEGRO_COLOR color; //cor
+} Retangulo; // nome do molde;
+
+
 int main(){
     //Inicializar o Allegro
     if(/*"Liga o Allegro"*/!al_init()){
@@ -23,6 +35,15 @@ int main(){
     }
     // Cria o Display
     ALLEGRO_DISPLAY * display = al_create_display(800,600);
+
+    Retangulo jogador = {
+        100,
+        100,
+        50,
+        50,
+        al_map_rgb(255,0,0)
+    };
+
     if (!display /*Verifica se a janela falhou*/)
     {
         printf("Erro ao exibir display");
@@ -49,9 +70,18 @@ int main(){
             running = false;
             // se o evento do display fechar o running da falso e interrope o evento
         }
+        //Aparecer desenho na tela, desenha retangulo
+        al_draw_filled_rectangle(
+            jogador.x,
+            jogador.y,
+            jogador.x + jogador.width,
+            jogador.y + jogador.height,
+            jogador.color
+        );
+        al_flip_display(); //faz o desenho aparecer na tela
 
     }
-    
+
     //apaga a fila e fecha a janela
     al_destroy_event_queue(event_queue);//apagar a fila de evntos na memoria ram quando o jogo termina
     al_destroy_display(display); //fecha a janela do jogo e libera memoria da placa video e ram
