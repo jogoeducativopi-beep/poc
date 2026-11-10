@@ -55,6 +55,19 @@ int main()
         50,
         al_map_rgb(255, 0, 0)};
 
+    // Criação de um vetor para obstaculos
+    Retangulo obstaculo[2] = {
+        {300,
+         400,
+         100,
+         50,
+         al_map_rgb(0, 255, 0)},
+        {500,
+         350,
+         100,
+         50,
+         al_map_rgb(0, 0, 255)}};
+
     if (!display /*Verifica se a janela falhou*/)
     {
         printf("Erro ao exibir display");
@@ -119,8 +132,17 @@ int main()
             {
                 printf("Clicou no jogador!\n");
             }
+        for (int i = 0; i < 2; i++)
+        {
+            if (event.mouse.x >= obstaculo[i].x &&
+                event.mouse.x <= obstaculo[i].x + obstaculo[i].width &&
+                event.mouse.y >= obstaculo[i].y &&
+                event.mouse.y <= obstaculo[i].y + obstaculo[i].height)
+            {
+                printf("Clicou no obstaculo!\n");
+            }
         }
-
+    }
         // criar movimento do jogador
         if (event.type /*que tipo de acontecimento acabou de ocorrer*/ == ALLEGRO_EVENT_KEY_DOWN) // verifica qual tecla foi apertada
         {
@@ -192,6 +214,17 @@ int main()
                 jogador.x + jogador.width,
                 jogador.y + jogador.height,
                 jogador.color);
+
+            // laço de repetição
+            for (int i = 0; i < 2; i++)
+            {
+                al_draw_filled_rectangle(
+                    obstaculo[i].x,
+                    obstaculo[i].y,
+                    obstaculo[i].x + obstaculo[i].width,
+                    obstaculo[i].y + obstaculo[i].height,
+                    obstaculo[i].color);
+            }
             al_flip_display(); // faz o desenho aparecer na tela
         }
     }
